@@ -5,6 +5,7 @@ from discord import Webhook, AsyncWebhookAdapter
 import aiohttp
 from contextlib import redirect_stdout
 from discord_slash import SlashCommand
+import json
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -13,46 +14,47 @@ slash = SlashCommand(client, sync_commands=True)
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.online)
-    print('logged in as the Private Bowsette Bot.')
-
-@client.event
-async def on_message(message):
-    if "MessageType.premium_guild" in str(message.type):
-        channel = client.guilds[0].get_channel(CHANNELIDHERE)
-        print(channel)
-        embed = discord.Embed(title="SERVER BOOST | Server Name Here", description=f"We have a new booster. Thank you.", color=(16750330))
-        await message.channel.send(embed=embed)
+    print('logged in as **Bot**')
 
 @client.event
 async def on_member_join(member):
-    print(f'{member.name} has joined the server')
-    channel = client.guilds[0].get_channel(CHANNELIDHERE)
-    print(channel)
-    embed = discord.Embed(title="MEMBER JOIN | Server Name Here", description=f"{member.name} has joined the server.", color=(3140255))
+    with open('guilds.json', 'r', encoding='utf-8') as f:
+        guilds_dict = json.load(f)
+    channel_id = guilds_dict[str(member.guild.id)]
+    embed = discord.Embed(title=f"MEMBER JOIN | {member.guild.name}", description=f"Hello {member.mention} and Welcome to **{member.guild.name}**. Make sure to read the rules channel", color=(3140255))
     embed.set_thumbnail(url=member.avatar_url)
-    await channel.send(embed=embed)
-    guild = await client.fetch_guild(SERVERIDHERE)
+    await client.get_channel(int(channel_id)).send(embed=embed)
+
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url('WEBHOOKTOKEN', adapter=AsyncWebhookAdapter(session))
+        await webhook.send(f'{member.mention} joined **{member.guild.name}**')
+
+    guild = member.guild
     role = discord.utils.get(guild.roles, name='Unverified')
     await member.add_roles(role)
     
-    async with aiohttp.ClientSession() as session:
-        webhook = Webhook.from_url('WEBHOOKTOKEN', adapter=AsyncWebhookAdapter(session))
-        await webhook.send(f'Hello {member.name} We are glad you are able to join us. Please make sure you read the rules and enjoy your stay here. In order to access the rest of the server, you need to verify yourself in the verify channel.')
-    
-    embed2 = discord.Embed(title="HI THERE", description=f"Welcome {member.name} to SERVER NAME HERE", color=(3140255))
-    embed2.add_field(name="How to access the server?", value="In order to access the rest of the server, head to the verify channel and type in **/verify**", inline=False)
+    embed2 = discord.Embed(title="HI THERE", description=f"Welcome {member.mention} to **{member.guild.name}**", color=(3140255))
+    embed2.add_field(name="How to access the server?", value="In order to access the rest of the server, head over to the verify channel and type in **/verify** with me", inline=False)
     await member.send(embed=embed2)
 
 @client.event
 async def on_member_remove(member):
-    print(f'{member.name} has left the server')
-    channel = client.guilds[0].get_channel(CHANNELIDHERE)
-    print(channel)
-    embed = discord.Embed(title="MEMBER LEAVE | Server Name Here", description=f"{member.name} has left the server. How sad", color=(16711680))
-    await channel.send(embed=embed)
+    with open('guilds.json', 'r', encoding='utf-8') as f:
+        guilds_dict = json.load(f)
+    channel_id = guilds_dict[str(member.guild.id)]
+    embed = discord.Embed(title=f"MEMBER LEAVE | {member.guild.name}", description=f"**{member.name}** has left **{member.guild.name}**. How sad", color=(16711680))
+    await client.get_channel(int(channel_id)).send(embed=embed)
+    
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url('WEBHOOKTOKEN', adapter=AsyncWebhookAdapter(session))
+        await webhook.send(f'{member.name} left **CAT ROSALINA 18+**')
+
+
+
+
 
 @slash.slash(name="verify", description='Gain access to the server')
-async def _verify(ctx):
+async def verify(ctx):
     mutedRole = discord.utils.get(ctx.guild.roles, name="ROLENAMEHERE")
 
     await ctx.author.remove_roles(mutedRole)
@@ -60,6 +62,33 @@ async def _verify(ctx):
     embed = discord.Embed(title="SUCCESSFULLY VERIFIED", description=f"Thank you for verifying yourself into the server. Now you can access the rest of the server now.", color=(3140255))
     await ctx.author.send(embed=embed)
     return
+
+@slash.slash(name="setwchannel", description='Sets which channel to send Welcome logs to for your current server.')
+@commands.has_permissions(manage_channels=True)
+async def setwchannel(ctx, channel: discord.TextChannel):
+    with open('guilds.json', 'r', encoding='utf-8') as f:
+        guilds_dict = json.load(f)
+
+    guilds_dict[str(ctx.guild.id)] = str(channel.id)
+    with open('guilds.json', 'w', encoding='utf-8') as f:
+        json.dump(guilds_dict, f, indent=4, ensure_ascii=False)
+    
+    await ctx.send(f'I set the welcome channel for **{ctx.guild.name}** to **{channel.name}**')
+
+@setwchannel.error
+async def setwchannel_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send('HEY! YOU NEED TO HAVE THE **MANAGE_CHANNELS** PERMISSION TO CONTINUE')
+    else:
+        raise error
+
+@slash.slash(name="resources", description='See useful links and stats.')
+async def resources(ctx):
+    embed = discord.Embed(title="USEFUL RESOURCES", description="Here is some useful links and stats.", color=(3140255))
+    embed.add_field(name="Your Current Server Stats", value="Guild Name: {ctx.guild.name}\nGuild ID: {ctx.guild.id}\nGuild Member Count: {ctx.guild.member_count}", inline=False)
+    embed.add_field(name="ORIGNAL SOURCE", value="Orignal Source Code: https://github.com/ErisTheEagleArt/advancewelcomebot.py\nMade and Provided by: LLoC Eagle Fan Art#1681", inline=False)
+    await ctx.send(embed=embed)
+
 
 
 
