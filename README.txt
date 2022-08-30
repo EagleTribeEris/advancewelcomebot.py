@@ -8,7 +8,7 @@ No need to make a bunch of discord bots and hosting them seperatly anymore for e
 
 Includes:
 - Sending messages in a desired text channel (New version now supports having one bot in multiple servers and welcomes members in your desired set channel for each server.)
-- Gives a role to a member
+- Gives an unverified role to a member with verification command
 - Sends a welcome message to a webhook
 - DMs members upon joining the server
 - Slash commands working with all of this.
@@ -38,8 +38,9 @@ You need to do nothing with the .json file. That file is already set to go.
 SET UP BOT ON DISCORD.
 1. Invite the bot to your server.
 2. Use /setwchannel command to change which text channel you want the welcome message to be sent to.
-3. Repeat Steps 1-2 for each server you want your bot it.
-NOTE: The bot will not DM new members if you do not set up the role the bot gives unless you want to modify the code.
+3. Create an "Unverified" role and channel for new members to use the /verify command. If needed, run /verifysetup. To ensure no errors, give your bot admin.
+4. Repeat Steps 1-3 for each server you want your bot it.
+NOTE: The bot will not DM new members if you do not set up the role the bot gives unless you want to modify the code. However, you must know what you are doing.
 
 ================================================
 
