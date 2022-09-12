@@ -53,6 +53,14 @@ instead.
 DISCLAIMER: THERE IS LITERALLY NO WARRENTY IF YOU DECIDE TO USE THIS SOURCE CODE. IF YOU DECIDE TO USE
 THIS SOURCE CODE, IT IS TO BE USED AT YOUR OWN RISK! WE WILL NOT BE HELD LIABLE FOR ANY DAMAGES WHAT SO EVER!
 
+READ THIS: I am unable to get a data reset command to work at all.
+The only way to remove your server/channel ids from the json file is too manually remove it from the file.
+Turn on Developers mode to find out your server id.
+I tried modifing the on_guild_remove in https://stackoverflow.com/questions/64760333/how-to-set-a-welcome-channel-discord-py
+and modified it to a command but unable to get it to work. At this point, idk if it is even possible to remove data from your json file via command.
+I always get the following error: discord.ext.commands.errors.CommandInvokeError: Command raised an exception: KeyError: 'MYGUILDIDHERE'
+If you know how to fix this or create a data reset command, PLEASE let me know but submitting an issue or pull request.
+
 ===============================================
 
 CREDITS:

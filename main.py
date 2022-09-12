@@ -7,7 +7,8 @@ from contextlib import redirect_stdout
 from discord_slash import SlashCommand
 import json
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.members = True
 client = discord.Client(intents=intents)
 slash = SlashCommand(client, sync_commands=True)
 
@@ -55,14 +56,17 @@ async def on_member_remove(member):
 
 @slash.slash(name="verify", description='Gain access to the server')
 async def verify(ctx):
-    mutedRole = discord.utils.get(ctx.guild.roles, name="ROLENAMEHERE")
+    role = discord.utils.get(ctx.guild.roles, name="Unverified")
 
-    await ctx.author.remove_roles(mutedRole)
-    await ctx.send("You have been verified and have access to the rest of the server.")
-    embed = discord.Embed(title="SUCCESSFULLY VERIFIED", description=f"Thank you for verifying yourself into the server. Now you can access the rest of the server now.", color=(3140255))
-    embed.set_footer(text=f"Successfully Verified in **{ctx.guild.name}")
-    await ctx.author.send(embed=embed)
-    return
+    if role in ctx.author.roles:
+        await ctx.author.remove_roles(role)
+        await ctx.send("You have been verified and have access to the rest of the server.")
+        embed = discord.Embed(title="SUCCESSFULLY VERIFIED", description=f"Thank you for verifying yourself into the server. Now you can access the rest of the server now.", color=(3140255))
+        embed.set_footer(text=f"Successfully Verified in **{ctx.guild.name}")
+        await ctx.author.send(embed=embed)
+        return
+    else:
+        await ctx.send("You are already verified. No need to rerun this command.")
 
 @slash.slash(name="setwchannel", description='Sets which channel to send Welcome logs to for your current server.')
 @commands.has_permissions(manage_channels=True)
