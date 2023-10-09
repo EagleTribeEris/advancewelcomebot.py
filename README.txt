@@ -1,14 +1,12 @@
-WELCOME BOT WITH SLASH COMMANDS FOR DISCORD.PY
+WELCOME BOT FOR DISCORD.PY AND REVOLT
 
-This source code allows you to welcome members while having Slash commands work.
+This source code allows you to welcome your members in your Discord server or Revolt.chat server.
 Includes:
 - Sending messages in a desired text channel
 - Gives a role to a member
 - Sends a welcome message to a webhook
-- DMs members upon joining the server
-
-With the Discord.py 2.0 rewrite, Slash commands became normal commands because slash commands has a big
-problem where there is no permission handling in slash commands.
+- DMs members upon joining the server with basic verification system
+- Added Revolt code with only welcoming members. Only works for 1 server.
 
 ================================================
 
@@ -18,26 +16,26 @@ With the Discord.py 2.0 rewrite. The code has been improved a lot. Here is what 
 - Code suitable for public bots since we use json file to store data on where to send Logs to which channel and which server
 - Added Ping command.
 
+With the Discord.py 2.0 rewrite, Slash commands became normal commands because slash commands has a big problem where there is no permission handling in slash commands.
+
 ================================================
 
 READ THIS: I am unable to get a data reset command to work at all.
-The only way to remove your server/channel ids from the json file is too manually remove it from the file.
-Turn on Developers mode to find out your server id.
-I tried modifing the on_guild_remove in https://stackoverflow.com/questions/64760333/how-to-set-a-welcome-channel-discord-py
-and modified it to a command but unable to get it to work. At this point, idk if it is even possible to remove data from your json file via command.
+The only way to remove your server/channel ids from the json file is too manually remove it from the file. Turn on Developers mode to find out your server id.
+I tried modifing the on_guild_remove in https://stackoverflow.com/questions/64760333/how-to-set-a-welcome-channel-discord-py and modified it to a command but unable to get it to work. At this point, idk if it is even possible to remove data from your json file via command.
 I always get the following error: discord.ext.commands.errors.CommandInvokeError: Command raised an exception: KeyError: 'MYGUILDIDHERE'
 If you know how to fix this or create a data reset command, PLEASE let me know but submitting an issue or pull request.
 
 ================================================
 
 REQUIREMENTS:
-- Knowledge of Discord.py
-- A discord bot application with token
+- Knowledge of Discord.py/Voltage
+- A discord bot application with token/Revolt bot with token
 - Python 3.8.6 or newer (Using a Python software version below this may cause issues)
 
 ================================================
 
-SETUP:
+DISCORD BOT SETUP:
 1. Fork or Download this Source code to your hosting provider
 2. Create a Discord Bot Application and copy your bot token at https://discord.com/developers
 3. At the bottom, replace DISCORDBOTTOKEN with your Discord bot token you just created.
@@ -52,6 +50,15 @@ SETUP:
 9. Run verifysetup if you need too
 10. You should be done (I advise you test with an alt or with a friend to ensure you did everything correctly)
 
+REVOLT BOT SETUP:
+1. Fork or Download this Source code to your hosting provider
+2. Create a Revolt Bot and copy your bot token at https://app.revolt.chat/settings/bots
+3. At the bottom, replace REVOLTBOTTOKEN with your Revolt bot token you just created.
+4. Head over to "botdev = ["INSERTYOURUSERIDHERE"]" and replace INSERTYOURUSERIDHERE with your Revolt user ID.
+5. Install Voltage through git (Included in the requirements file)
+6. Run the bot
+7. Set up the Joins/Leaves log channel with the setwchannel command (Must be the server owner to use).
+
 ================================================
 
 DISCLAIMER: THERE IS LITERALLY NO WARRENTY IF YOU DECIDE TO USE THIS SOURCE CODE. IF YOU DECIDE TO USE
@@ -59,4 +66,5 @@ THIS SOURCE CODE, IT IS TO BE USED AT YOUR OWN RISK! WE WILL NOT BE HELD LIABLE 
 
 ================================================
 
-CREDITS: https://stackoverflow.com/questions/64760333/how-to-set-a-welcome-channel-discord-py
+CREDITS
+Learned from: https://stackoverflow.com/questions/64760333/how-to-set-a-welcome-channel-discord-py
